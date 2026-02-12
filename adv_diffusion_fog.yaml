@@ -1,0 +1,18 @@
+# Adversarial Dataset Config
+# This file is auto-generated to evaluate adversarial examples
+
+path: /root/autodl-tmp/dky/foggy_test # Project root
+train: runs/attack/diffusion_fog_train_5 # Path to adversarial images (used as validation source)
+val: runs/attack/diffusion_fog_train_5   # Path to adversarial images
+test: runs/attack/diffusion_fog_train_5  # Path to adversarial images
+
+# Classes matches CityScapes
+names:
+  0: person
+  1: rider
+  2: car
+  3: truck
+  4: bus
+  5: train
+  6: motorcycle
+  7: bicycle

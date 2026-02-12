@@ -1,0 +1,14 @@
+
+path: /root/autodl-tmp/dky/foggy_test/runs/eval_temp
+train: images
+val: images
+test: images
+names:
+  0: person
+  1: rider
+  2: car
+  3: truck
+  4: bus
+  5: train
+  6: motorcycle
+  7: bicycle

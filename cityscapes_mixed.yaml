@@ -1,0 +1,16 @@
+path: /root/autodl-tmp/dky/foggy_test
+train:
+  - /root/autodl-tmp/dky/foggy_test/data/OpenDataLab___CityScapes/images/train
+  - /root/autodl-tmp/dky/foggy_test/runs/attack/sgsf_dataset/images/train
+val: /root/autodl-tmp/dky/foggy_test/data/rgb_anon_yolo/images/val
+test: /root/autodl-tmp/dky/foggy_test/data/OpenDataLab___CityScapes/images/test
+
+names:
+  0: person
+  1: rider
+  2: car
+  3: truck
+  4: bus
+  5: train
+  6: motorcycle
+  7: bicycle
