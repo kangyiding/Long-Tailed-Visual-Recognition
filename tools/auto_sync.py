@@ -26,33 +26,43 @@ def run_command(cmd, cwd=None):
         return None
 
 def check_for_changes():
-    # Check if there are changes to track
+    # Check for uncommitted changes
     status = run_command("git status --porcelain", cwd=GIT_DIR)
-    return bool(status)
+    if status:
+        return True
+        
+    # Check for unpushed commits
+    # This requires a remote to be set up. If no remote, this might fail or return nothing.
+    try:
+        # Check if we are ahead of remote
+        # We use 'git rev-list --count @{u}..HEAD' to see how many commits we are ahead of upstream
+        # If no upstream is set, this command will fail.
+        # Alternatively, try to push if we haven't pushed in a while? 
+        # Easier: just try to push if we are ahead.
+        ahead = run_command("git rev-list HEAD --not --remotes", cwd=GIT_DIR)
+        return bool(ahead)
+    except:
+        return False
 
 def sync_to_github():
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{timestamp}] Detecting changes...")
+    print(f"[{timestamp}] Syncing...")
     
-    # Add all changes
-    run_command("git add .", cwd=GIT_DIR)
+    # 1. Commit any local changes
+    status = run_command("git status --porcelain", cwd=GIT_DIR)
+    if status:
+        print(f"[{timestamp}] Committing changes...")
+        run_command("git add .", cwd=GIT_DIR)
+        commit_msg = f"Auto sync: {timestamp}"
+        run_command(f'git commit -m "{commit_msg}"', cwd=GIT_DIR)
     
-    # Commit
-    commit_msg = f"Auto sync: {timestamp}"
-    commit_res = run_command(f'git commit -m "{commit_msg}"', cwd=GIT_DIR)
-    
-    if commit_res:
-        print(f"[{timestamp}] Committed: {commit_msg}")
-        
-        # Push
-        # Note: Credential helper should handle auth if configured
-        push_res = run_command("git push origin master", cwd=GIT_DIR) # Assuming master/main
-        if push_res is not None:
-             print(f"[{timestamp}] Pushed to GitHub successfully.")
-        else:
-             print(f"[{timestamp}] Push failed. Check credentials/remote.")
+    # 2. Push
+    print(f"[{timestamp}] Pushing to GitHub...")
+    push_res = run_command("git push origin master", cwd=GIT_DIR)
+    if push_res is not None:
+         print(f"[{timestamp}] Push successful.")
     else:
-        print(f"[{timestamp}] Commit failed (or nothing to commit).")
+         print(f"[{timestamp}] Push failed.")
 
 def main():
     print(f"Starting auto-sync monitor for {GIT_DIR}...")
